@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './typeorm/entities/users';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { User } from './typeorm/entities/users';
       entities: [User],
       synchronize: true, // Indicates if database schema should be auto created on every application launch.
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
