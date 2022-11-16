@@ -2,9 +2,11 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Post } from './posts';
 import { Profile } from './profile';
 
 @Entity({ name: 'users' }) // DB에서 해당 클래스를 부를 이름 지정가능
@@ -27,4 +29,7 @@ export class User {
   @OneToOne(() => Profile)
   @JoinColumn()
   profile: Profile;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }

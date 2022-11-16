@@ -1,11 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from 'src/typeorm/entities/posts';
 import { Profile } from 'src/typeorm/entities/profile';
 import { User } from 'src/typeorm/entities/users';
 import {
   CreateUserParams,
   UpdateUserParams,
   CreateUserProfileParams,
+  CreateUserPostParams,
 } from 'src/utils/types';
 import { Repository } from 'typeorm';
 
@@ -15,6 +17,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Profile) private profileRepository: Repository<Profile>,
+    @InjectRepository(Post) private postRepository: Repository<Post>,
   ) {}
 
   findUsers() {
@@ -54,5 +57,23 @@ export class UsersService {
     user.profile = savedProfile;
 
     return this.userRepository.save(user);
+  }
+
+  async createUserPost(
+    id: number,
+    createUserPostDetails: CreateUserPostParams,
+  ) {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const newPost = this.postRepository.create({
+      ...createUserPostDetails,
+      user,
+    });
+
+    return this.userRepository.save(newPost);
   }
 }
